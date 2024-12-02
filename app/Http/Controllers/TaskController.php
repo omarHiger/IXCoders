@@ -41,9 +41,17 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Task $task)
+    public function show(string $id)
     {
-        //
+        try {
+            $task = Task::find($id);
+            if (!$task)
+                return $this->notFound('Task not found');
+
+            return $this->success('Get Task successfully', new TaskResource($task));
+        } catch (Exception $th) {
+            return $this->serverError($th->getMessage());
+        }
     }
 
 
