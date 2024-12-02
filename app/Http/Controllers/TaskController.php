@@ -30,8 +30,8 @@ class TaskController extends Controller
     {
         try {
             $data = $request->validated();
-            $task = Task::creat($data);
-            return $this->success('create task successfully', $task);
+            $task = Task::create($data);
+            return $this->success('create task successfully', new TaskResource($task));
 
         } catch (Exception $th) {
             return $this->serverError($th->getMessage());

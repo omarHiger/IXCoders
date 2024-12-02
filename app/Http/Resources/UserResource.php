@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class TaskResource extends JsonResource
+class UserResource extends JsonResource
 {
 
     public static function collection($resource)
@@ -17,7 +17,6 @@ class TaskResource extends JsonResource
 
         return parent::collection($resource);
     }
-
     /**
      * Transform the resource into an array.
      *
@@ -27,10 +26,7 @@ class TaskResource extends JsonResource
     {
         return [
             'id' => $this['id'],
-            'title' => $this['title'],
-            'description' => $this['description'],
-            'status' => $this['status'],
-            'user' => new UserResource($this['user'])
+            'name' => $this['name']
         ];
     }
 }
