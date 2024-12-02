@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->enum('status',TaskStatus::getValues());
+            $table->enum('status',TaskStatus::getValues())->default(TaskStatus::Pending);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
