@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static creat(mixed $data)
+ */
 class Task extends Model
 {
     protected $fillable = [

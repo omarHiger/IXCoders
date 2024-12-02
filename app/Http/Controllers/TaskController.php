@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskCreateRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
+use Exception;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -16,7 +18,7 @@ class TaskController extends Controller
         try {
             $tasks = TaskResource::collection(Task::all());
             return $this->success('Get tasks successfully', $tasks);
-        } catch (\Exception $th) {
+        } catch (Exception $th) {
             return $this->serverError($th->getMessage());
         }
     }
@@ -24,9 +26,16 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TaskCreateRequest $request)
     {
-        //
+        try {
+            $data = $request->validated();
+            $task = Task::creat($data);
+            return $this->success('create task successfully', $task);
+
+        } catch (Exception $th) {
+            return $this->serverError($th->getMessage());
+        }
     }
 
     /**
