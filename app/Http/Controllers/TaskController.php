@@ -9,6 +9,7 @@ use App\Http\Requests\TaskUpdateRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -68,6 +69,9 @@ class TaskController extends Controller
             if (!$task)
                 return $this->notFound('Task not found');
 
+            //this line for authorize that only owner can update task
+            Gate::authorize('update', $task);
+
             $data = $request->validated();
             $task->update($data);
             return $this->success('Update Task successfully', new TaskResource($task));
@@ -102,6 +106,10 @@ class TaskController extends Controller
             $task = Task::find($id);
             if (!$task)
                 return $this->notFound('Task not found');
+
+            //this line for authorize that only owner can delete task
+            Gate::authorize('delete', $task);
+
             $task->delete();
             return $this->success('Delete task successfully');
         } catch (\throwable $th) {
