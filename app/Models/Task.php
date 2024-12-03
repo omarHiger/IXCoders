@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static create(mixed $data)
+ * @method static find(\App\Http\Controllers\string $id)
  */
 class Task extends Model
 {
@@ -19,7 +20,7 @@ class Task extends Model
         'user_id',
     ];
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class,'user_id');
     }

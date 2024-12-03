@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskCreateRequest;
+use App\Http\Requests\TaskUpdateRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Exception;
@@ -13,7 +14,7 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         try {
             $tasks = TaskResource::collection(Task::all());
@@ -26,7 +27,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TaskCreateRequest $request)
+    public function store(TaskCreateRequest $request): \Illuminate\Http\JsonResponse
     {
         try {
             $data = $request->validated();
@@ -41,7 +42,7 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $task = Task::find($id);
@@ -58,15 +59,25 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $task = Task::find($id);
+            if (!$task)
+                return $this->notFound('Task not found');
+
+            $data = $request->validated();
+            $task->update($data);
+            return $this->success('Update Task successfully', new TaskResource($task));
+        } catch (Exception $th) {
+            return $this->serverError($th->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task): \Illuminate\Http\JsonResponse
     {
         //
     }

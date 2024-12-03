@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class TaskResource extends JsonResource
 {
 
-    public static function collection($resource)
+    public static function collection($resource): LengthAwarePaginator|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         if ($resource instanceof LengthAwarePaginator) {
             return $resource->setCollection($resource->getCollection()->mapInto(static::class));
