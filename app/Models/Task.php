@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static find(\App\Http\Controllers\string $id)
  * @method static paginate(mixed $param)
  * @method static filter(array $all)
+ * @method static count()
  */
 class Task extends Model
 {

@@ -12,6 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @method static where(string $string, mixed $email)
  * @method static create(array $array)
+ * @method static count()
  */
 class User extends Authenticatable
 {
