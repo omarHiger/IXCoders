@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskStatusUpdated;
 use App\Http\Requests\TaskCreateRequest;
 use App\Http\Requests\TaskUpdateRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
-use Exception;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -19,7 +19,7 @@ class TaskController extends Controller
         try {
             $tasks = TaskResource::collection(Task::all());
             return $this->success('Get tasks successfully', $tasks);
-        } catch (Exception $th) {
+        } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
         }
     }
@@ -34,7 +34,7 @@ class TaskController extends Controller
             $task = Task::create($data);
             return $this->success('create task successfully', new TaskResource($task));
 
-        } catch (Exception $th) {
+        } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
         }
     }
@@ -50,7 +50,7 @@ class TaskController extends Controller
                 return $this->notFound('Task not found');
 
             return $this->success('Get Task successfully', new TaskResource($task));
-        } catch (Exception $th) {
+        } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
         }
     }
@@ -69,7 +69,24 @@ class TaskController extends Controller
             $data = $request->validated();
             $task->update($data);
             return $this->success('Update Task successfully', new TaskResource($task));
-        } catch (Exception $th) {
+        } catch (\throwable $th) {
+            return $this->serverError($th->getMessage());
+        }
+    }
+
+    public function changeStatus(string $id, Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $task = Task::find($id);
+            if (!$task)
+                return $this->notFound('Task not found');
+            $task->update([
+                'status' => $request['status']
+            ]);
+            event(new TaskStatusUpdated($task));
+            return $this->success('task status updated successfully', new TaskResource($task));
+
+        } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
         }
     }
@@ -85,7 +102,7 @@ class TaskController extends Controller
                 return $this->notFound('Task not found');
             $task->delete();
             return $this->success('Delete task successfully');
-        } catch (Exception $th) {
+        } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
         }
     }
