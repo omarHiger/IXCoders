@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @method static create(mixed $data)
  * @method static find(\App\Http\Controllers\string $id)
+ * @method static paginate(mixed $param)
  */
 class Task extends Model
 {

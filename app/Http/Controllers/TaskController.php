@@ -14,10 +14,10 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $tasks = TaskResource::collection(Task::all());
+            $tasks = TaskResource::collection(Task::paginate($request['perPage'] ?? 5));
             return $this->success('Get tasks successfully', $tasks);
         } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
