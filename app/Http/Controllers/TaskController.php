@@ -17,7 +17,7 @@ class TaskController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $tasks = TaskResource::collection(Task::paginate($request['perPage'] ?? 5));
+            $tasks = TaskResource::collection(Task::filter($request->all())->paginate($request['perPage'] ?? 5));
             return $this->success('Get tasks successfully', $tasks);
         } catch (\throwable $th) {
             return $this->serverError($th->getMessage());
