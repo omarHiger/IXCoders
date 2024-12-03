@@ -18,21 +18,17 @@ class RolesSeeder extends Seeder
     {
         // Create Roles
         $adminRole = Role::create(['name' => 'Admin']);
-        $ownerRole = Role::create(['name' => 'Owner']);
         $userRole = Role::create(['name' => 'User']);
 
         // Create Permissions
         $manageFilament = Permission::create(['name' => 'manage filament']);
-        $updateTask = Permission::create(['name' => 'update task']);
-        $deleteTask = Permission::create(['name' => 'delete task']);
 
         $adminRole->givePermissionTo($manageFilament);
-        $ownerRole->givePermissionTo([$updateTask, $deleteTask]);
         $admin = User::where('email','omar@test.com')->first();
         $admin->assignRole($adminRole);
 
-        $owner = Task::find(2)->user()->first();
-        $owner->assignRole($ownerRole);
+       $user = User::find(3);
+        $user->assignRole($userRole);
 
     }
 }
