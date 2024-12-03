@@ -31,7 +31,8 @@ class TaskCreateRequest extends FormRequest
         return [
             'title' => 'required',
             'description' => 'required',
-            'user_id' => 'required | exists:users,id'
+            'user_id' => 'required | exists:users,id',
+            'status' => 'sometimes|in:' . implode(',', TaskStatus::getValues()),
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Events\TaskStatusUpdated;
 use App\Http\Requests\TaskCreateRequest;
 use App\Http\Requests\TaskUpdateRequest;
@@ -31,6 +32,7 @@ class TaskController extends Controller
     {
         try {
             $data = $request->validated();
+            $data['status'] = $data['status'] ?? TaskStatus::Pending;
             $task = Task::create($data);
             return $this->success('create task successfully', new TaskResource($task));
 
