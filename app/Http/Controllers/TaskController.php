@@ -77,8 +77,16 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $task = Task::find($id);
+            if (!$task)
+                return $this->notFound('Task not found');
+            $task->delete();
+            return $this->success('Delete task successfully');
+        } catch (Exception $th) {
+            return $this->serverError($th->getMessage());
+        }
     }
 }
