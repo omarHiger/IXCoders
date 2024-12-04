@@ -1,66 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Task Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This repository contains a Laravel-based task management system with advanced features like role management, real-time notifications, background jobs, and task filtering. Follow the steps below to set up the project.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## **Setup Instructions**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### **1. Requirements**
+- Install **Docker Desktop**.
+- Set up **WSL** (Windows Subsystem for Linux) with Ubuntu.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+### **2. Clone the Project**
+1. Clone the repository.
+2. Place the project folder inside your **Ubuntu folder** under your user account.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### **3. Configure Sail Alias**
+1. Open a terminal and run:
+   ```bash
+   alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+### **4. Start Docker Services**
+1. Start the services by running:
+   ```bash
+   sail up -d
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+### **5. Run Database Migrations**
+1. Run the migrations:
+   ```bash
+   sail artisan migrate
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+### **6. Create Filament Admin User**
+1. Create an admin user for Filament:
+   ```bash
+   sail artisan make:filament-user
+   ```
+2. Use the following credentials:
+    - **Name**: Omar
+    - **Email**: `omar@test.com`
+    - **Password**: `123`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   Please use this email because it's set in the seeder for role and permission assignments.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### **7. Seed the Database**
+1. Seed the database with initial data:
+   ```bash
+   sail artisan db:seed
+   ```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## **Features Overview**
 
-## License
+### **1. Dashboard**
+- Built with **Filament** to provide CRUD operations for Users and Tasks.
+- Task management includes:
+    - Filtering tasks by status.
+    - Restricting edit and delete permissions to task owners.
+- Role management is implemented using **spatie/laravel-permission**:
+    - Admin role is restricted to access the dashboard.
+    - Admin middleware is added in the `AdminPanelProvider`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+### **2. Authentication Policies**
+- Policies are used to ensure only task owners can delete or update their tasks.
+
+---
+
+### **3. Real-Time Notifications**
+- Filament Dashboard includes real-time notifications triggered when a task's status is updated.
+- Implemented using **TaskStatusUpdated** event.
+- To test this:
+    1. Run the following in separate terminals:
+       ```bash
+       sail artisan queue:work
+       ```
+    2. Change the status of a task.
+
+---
+
+### **4. Background Jobs**
+- **SendTaskSummaryJob** sends daily task summary emails to task owners.
+- Email sending is configured using the **SMTP** mailer.
+- The job is scheduled in `routes/console.php`:
+
+- To test:
+    1. Run the scheduler:
+       ```bash
+       sail artisan schedule:run
+       ```
+    2. In another terminal, run the queue worker:
+       ```bash
+       sail artisan queue:work
+       ```
+- Note: The job is scheduled daily. To test, you can modify it to run every minute.
+
+---
+
+### **5. Task Pagination and Filtering**
+- **Pagination** is implemented for tasks.
+- Tasks can be filtered by **title** and **status** using the `tucker-eric/eloquentfilter` package.
