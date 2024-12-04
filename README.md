@@ -64,6 +64,12 @@ This repository contains a Laravel-based task management system with advanced fe
 
 ---
 
+### **8. Pusher & DataBase**
+- Get the **Pusher** and **database** attributes from **.env.example** file
+
+---
+
+
 ## **Features Overview**
 
 ### **1. Dashboard**
@@ -115,3 +121,10 @@ This repository contains a Laravel-based task management system with advanced fe
 ### **5. Task Pagination and Filtering**
 - **Pagination** is implemented for tasks.
 - Tasks can be filtered by **title** and **status** using the `tucker-eric/eloquentfilter` package.
+
+## API Documentation
+
+Access the Postman collection for API endpoints and testing:
+[Postman Documentation](https://documenter.getpostman.com/view/20088313/2sAYBa99QL)
+
+---
